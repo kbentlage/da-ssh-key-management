@@ -1,0 +1,37 @@
+#!/usr/local/bin/php -c/usr/local/directadmin/plugins/ssh_key_management/php/php.ini
+
+<?php
+require_once dirname(__DIR__) . '/php/bootstrap.php';
+
+$sshKeyController = new \DirectAdmin\SshKeyManagement\Controllers\SshKeyController;
+
+if(isset($_POST['submit']) && isset($_POST['key']) && $_POST['key'])
+{
+    if($sshKeyController->addKey($_POST['key']))
+    {
+        echo '<p>SSH key is succesfully added. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+    }
+    else
+    {
+        echo '<p>SSH key is not added, due to an unknown error. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+    }
+}
+else
+{
+    echo '<table class=list cellpadding=3 cellspacing=1>
+<form name="ssh" action="/CMD_PLUGINS/ssh_key_management/add.html" method="post">
+
+    <tr><td class=listtitle colspan=2>Add SSH key</td></tr>
+
+    <tr><td class=list>SSH Key:</td><td class=list>
+        <textarea name="key" rows="" cols="" style="width: 600px; height: 150px;"></textarea>
+    </td></tr>
+
+    <tr><td class=listtitle colspan=3 align=right>
+        <input type="submit" name="submit" value="Add Key">
+    </td></tr>
+</form>
+</table>';
+}
+
+?>
