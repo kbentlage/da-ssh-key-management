@@ -61,6 +61,24 @@ class SshKeyController
     }
 
     /**
+     * Has User SSH Access
+     *
+     * @return bool
+     */
+    public function hasUserSshAccess()
+    {
+        $shell = exec('echo $SHELL');
+        $shell = strtolower(trim($shell));
+
+        if($shell == '/bin/bash')
+        {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    /**
      * Get Keys
      *
      * @return array|null

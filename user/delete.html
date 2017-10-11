@@ -5,21 +5,28 @@ require_once dirname(__DIR__) . '/php/bootstrap.php';
 
 $sshKeyController = new \DirectAdmin\SshKeyManagement\Controllers\SshKeyController;
 
-if(isset($_GET['KEY']) && $_GET['KEY'] && ctype_digit($_GET['KEY']))
+if($sshKeyController->hasUserSshAccess())
 {
-    $key = $_GET['KEY'];
-
-    if($sshKeyController->deleteKey($key))
+    if(isset($_GET['KEY']) && $_GET['KEY'] && ctype_digit($_GET['KEY']))
     {
-        echo '<p>SSH key succesfully deleted. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        $key = $_GET['KEY'];
+
+        if($sshKeyController->deleteKey($key))
+        {
+            echo '<p>SSH key succesfully deleted. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        }
+        else
+        {
+            echo '<p>SSH key is not deleted, due to an unknown error. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        }
     }
     else
     {
-        echo '<p>SSH key is not deleted, due to an unknown error. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        echo '<p>Invalid request. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
     }
 }
 else
 {
-    echo '<p>Invalid request. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+echo '<p>Your account has no access to SSH.</p>';
 }
 ?>
