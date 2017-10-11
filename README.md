@@ -7,15 +7,24 @@ The problem with DirectAdmin is that users can only logon to SSH with a plain-te
 
 I developed and used this plugin for over a year now on our own servers, but I decided to release it to the public! So everyone can use this.
 
-## Installation
+# Installation
 ```
 cd /usr/local/directadmin/plugins
 git clone https://github.com/kbentlage/da-ssh-key-management.git ssh_key_management
 sh ssh_key_management/scripts/install.sh
 ```
 
-## Update
+# Update
 ```
 cd /usr/local/directadmin/plugins/ssh_key_management
 git pull
 ```
+
+# Screenshots
+Add SSH key
+
+![Add SSH key](https://raw.githubusercontent.com/kbentlage/da-ssh-key-management/master/screenshots/add.png)
+
+List SSH keys
+
+![List SSH keys](https://raw.githubusercontent.com/kbentlage/da-ssh-key-management/master/screenshots/list.png)
