@@ -1,0 +1,44 @@
+#!/usr/local/bin/php -c/usr/local/directadmin/plugins/ssh_key_management/php/php.ini
+
+<?php
+require_once dirname(__DIR__) . '/php/bootstrap.php';
+
+$sshKeyController = new \DirectAdmin\SshKeyManagement\Controllers\SshKeyController;
+
+if($sshKeyController->hasUserSshAccess())
+{
+    $keys = $sshKeyController->getKeys();
+
+    echo '<p><a href="/CMD_PLUGINS/ssh_key_management/add.html">Add SSH key</a>.</p>';
+
+    if($keys)
+    {
+        echo '<table class="list table-highlight" cellpadding="3" cellspacing="1">
+        <tbody>
+        <tr>
+            <td class="listtitle">Description</td>
+            <td class="listtitle">Fingerprint</td>
+            <td class="listtitle">Delete</td>
+        </tr>';
+
+        foreach($keys as $id => $key)
+        {
+        echo '<tr>
+            <td valign="top" class="list">'.$key['description'].'</td>
+            <td valign="top" class="list">'.$key['fingerprint'].'</td>
+            <td valign="top" class="list"><a href="/CMD_PLUGINS/ssh_key_management/delete.html?KEY='.$id.'">Delete</a></td>
+        </tr>';
+        }
+
+        echo '</table>';
+    }
+    else
+    {
+        echo '<p>No SSH keys present yet. <a href="/CMD_PLUGINS/ssh_key_management/add.html">Add SSH key</a>.</p>';
+    }
+}
+else
+{
+    echo '<p>Your account has no access to SSH.</p>';
+}
+?>
