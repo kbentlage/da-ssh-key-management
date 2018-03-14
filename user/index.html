@@ -4,6 +4,7 @@
 require_once dirname(__DIR__) . '/php/bootstrap.php';
 
 $sshKeyController = new \DirectAdmin\SshKeyManagement\Controllers\SshKeyController;
+$firewallController = new \DirectAdmin\SshKeyManagement\Controllers\FirewallController;
 
 if($sshKeyController->hasUserSshAccess())
 {
@@ -30,7 +31,37 @@ if($sshKeyController->hasUserSshAccess())
         </tr>';
         }
 
-        echo '</table>';
+        echo '</tbody>
+        </table>';
+
+        $hosts = $firewallController->getHosts();
+
+        if($hosts)
+        {
+            echo '<table class="list table-highlight" cellpadding="3" cellspacing="1">
+            <tbody>
+            <tr>
+                <td class="listtitle">Host</td>
+                <td class="listtitle">Description</td>
+                <td class="listtitle">Delete</td>
+            </tr>';
+
+            foreach($hosts as $id => $host)
+            {
+            echo '<tr>
+                <td valign="top" class="list">'.$host['address'].'</td>
+                <td valign="top" class="list">'.$host['description'].'</td>
+                <td valign="top" class="list"><a href="/CMD_PLUGINS/ssh_key_management/delete-access-host.html?KEY='.$id.'">Delete</a></td>
+            </tr>';
+            }
+
+            echo '</tbody>
+            </table>';
+        }
+        else
+        {
+            echo '<p>No SSH access hosts present yet. <a href="/CMD_PLUGINS/ssh_key_management/add-access-host.html">Add SSH access host</a>.</p>';
+        }
     }
     else
     {

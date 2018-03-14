@@ -1,0 +1,48 @@
+#!/usr/local/bin/php -c/usr/local/directadmin/plugins/ssh_key_management/php/php.ini
+
+<?php
+require_once dirname(__DIR__) . '/php/bootstrap.php';
+
+$sshKeyController = new \DirectAdmin\SshKeyManagement\Controllers\SshKeyController;
+$firewallController = new \DirectAdmin\SshKeyManagement\Controllers\FirewallController;
+
+if($sshKeyController->hasUserSshAccess())
+{
+    if(isset($_POST['submit']) && isset($_POST['host']) && $_POST['host'] && isset($_POST['description']))
+    {
+        if($firewallController->addHost($_POST['host'], $_POST['description']))
+        {
+            echo '<p>SSH access host is succesfully added. It may take a few minutes before you're host can access SSH. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        }
+        else
+        {
+            echo '<p>SSH access host is not added, due to an unknown error. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        }
+    }
+    else
+    {
+        echo '<table class=list cellpadding=3 cellspacing=1>
+    <form name="ssh" action="/CMD_PLUGINS/ssh_key_management/add-access-host.html" method="post">
+
+        <tr><td class=listtitle colspan=2>Add SSH access host</td></tr>
+
+        <tr><td class=list>IP-address (IPv4 or IPv6):</td><td class=list>
+            <input name="address" />
+        </td></tr>
+
+        <tr><td class=list>Description:</td><td class=list>
+            <input name="description" />
+        </td></tr>
+
+        <tr><td class=listtitle colspan=3 align=right>
+            <input type="submit" name="submit" value="Add Host">
+        </td></tr>
+    </form>
+    </table>';
+    }
+}
+else
+{
+    echo '<p>Your account has no access to SSH.</p>';
+}
+?>
