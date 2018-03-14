@@ -11,8 +11,8 @@ namespace DirectAdmin\SshKeyManagement\Controllers;
 
 class FirewallController
 {
-    private $_hostsFilePath   = '';
-    private $_hosts           = array();
+    private $_hostsFilePath = '';
+    private $_hosts = array();
 
     /**
      * Construct
@@ -33,17 +33,12 @@ class FirewallController
     {
         $this->_hostsFilePath = '/home/' . getenv('USERNAME') . '/.ssh-hosts.json';
 
-        if (file_exists($this->_hostsFilePath))
-        {
-            if ($hostsContent = file_get_contents($this->_hostsFilePath))
-            {
-                if($hosts = @json_decode($hostsContent, TRUE))
-                {
-                    if ($hosts)
-                    {
+        if (file_exists($this->_hostsFilePath)) {
+            if ($hostsContent = file_get_contents($this->_hostsFilePath)) {
+                if ($hosts = @json_decode($hostsContent, TRUE)) {
+                    if ($hosts) {
                         $i = 1;
-                        foreach($hosts as $host)
-                        {
+                        foreach ($hosts as $host) {
                             $this->_hosts[$i] = $host;
                             $i++;
                         }
@@ -60,8 +55,7 @@ class FirewallController
      */
     public function getHosts()
     {
-        if($this->_hosts)
-        {
+        if ($this->_hosts) {
             return $this->_hosts;
         }
 
@@ -77,17 +71,13 @@ class FirewallController
      */
     public function addHost($address, $description)
     {
-        $address     = trim($address);
+        $address = trim($address);
         $description = trim($description);
 
-        if($this->_isValidHost($address))
-        {
-            if($this->_isUniqueHost($address))
-            {
-                if ($this->_addHostData($address, $description))
-                {
-                    if ($this->_saveData())
-                    {
+        if ($this->_isValidHost($address)) {
+            if ($this->_isUniqueHost($address)) {
+                if ($this->_addHostData($address, $description)) {
+                    if ($this->_saveData()) {
                         return TRUE;
                     }
                 }
@@ -106,15 +96,63 @@ class FirewallController
      */
     public function deleteHost($key)
     {
-        if ($this->_deleteHostData($key))
-        {
-            if ($this->_saveData())
-            {
+        if ($this->_deleteHostData($key)) {
+            if ($this->_saveData()) {
                 return TRUE;
             }
         }
 
         return FALSE;
+    }
+
+    /**
+     * Run Cronjob
+     *
+     * @return void
+     */
+    public function runCronjob()
+    {
+        $users = scandir('/home');
+
+        foreach($users as $user)
+        {
+            if(is_dir('/home/'.$user))
+            {
+                if(file_exists('/home/'.$user.'/.ssh-hosts.json'))
+                {
+                    $hostsJson = file_get_contents('/home/'.$user.'/.ssh-hosts.json');
+
+                    if($hosts = @json_decode($hostsJson, TRUE))
+                    {
+                        $updated = FALSE;
+
+                        foreach($hosts as $key => $host)
+                        {
+                            if(!$host['processed'])
+                            {
+                                $allowRule = 'tcp|in|d=22|s='.$host['address'].' # da-ssh-management: '.$user.' @ '.date('d-m-Y H:i').PHP_EOL;
+
+                                if(file_put_contents('/etc/csf/csf.allow', $allowRule, FILE_APPEND))
+                                {
+                                    shell_exec('csf -r');
+
+                                    $hosts[$key]['processed'] = TRUE;
+
+                                    $updated = TRUE;
+                                }
+                            }
+                        }
+
+                        if($updated)
+                        {
+                            $hostsJson = json_decode($hosts);
+
+                            file_put_contents('/home/'.$user.'/.ssh-hosts.json', $hostsJson);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
