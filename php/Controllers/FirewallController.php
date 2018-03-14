@@ -101,7 +101,7 @@ class FirewallController
      */
     public function deleteHost($key)
     {
-        if ($this->_deleteKeyData($key))
+        if ($this->_deleteHostData($key))
         {
             if ($this->_saveData())
             {
