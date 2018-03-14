@@ -172,9 +172,16 @@ class FirewallController
 
                         if($updated)
                         {
-                            $hostsJson = json_encode($hosts);
-
-                            file_put_contents('/home/'.$user.'/.ssh-hosts.json', $hostsJson);
+                            if($hosts)
+                            {
+                                $hostsJson = json_encode($hosts);
+                                
+                                file_put_contents('/home/'.$user.'/.ssh-hosts.json', $hostsJson);
+                            }
+                            else
+                            {
+                                unlink('/home/'.$user.'/.ssh-hosts.json');
+                            }
                         }
                     }
                 }
