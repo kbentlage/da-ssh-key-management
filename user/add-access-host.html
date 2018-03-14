@@ -8,11 +8,11 @@ $firewallController = new \DirectAdmin\SshKeyManagement\Controllers\FirewallCont
 
 if($sshKeyController->hasUserSshAccess())
 {
-    if(isset($_POST['submit']) && isset($_POST['host']) && $_POST['host'] && isset($_POST['description']))
+    if(isset($_POST['submit']) && isset($_POST['address']) && $_POST['address'] && isset($_POST['description']))
     {
-        if($firewallController->addHost($_POST['host'], $_POST['description']))
+        if($firewallController->addHost($_POST['address'], $_POST['description']))
         {
-            echo '<p>SSH access host is succesfully added. It may take a few minutes before you're host can access SSH. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+            echo '<p>SSH access host is succesfully added. It may take a few minutes before this added host can access SSH. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
         }
         else
         {
