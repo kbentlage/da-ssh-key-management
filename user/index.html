@@ -34,6 +34,8 @@ if($sshKeyController->hasUserSshAccess())
         echo '</tbody>
         </table>';
 
+        echo '<p><a href="/CMD_PLUGINS/ssh_key_management/add-access-host.html">Add SSH access host</a>.</p>';
+
         $hosts = $firewallController->getHosts();
 
         if($hosts)

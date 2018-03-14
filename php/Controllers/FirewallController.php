@@ -37,7 +37,7 @@ class FirewallController
         {
             if ($hostsContent = file_get_contents($this->_hostsFilePath))
             {
-                if($hosts = @json_decode($hostsContent))
+                if($hosts = @json_decode($hostsContent, TRUE))
                 {
                     if ($hosts)
                     {
@@ -125,6 +125,7 @@ class FirewallController
         $this->_hosts[] = array(
             'address'     => $address,
             'description' => $description,
+            'processed'   => FALSE,
         );
 
         return TRUE;

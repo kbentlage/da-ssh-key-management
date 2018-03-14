@@ -1,0 +1,33 @@
+#!/usr/local/bin/php -c/usr/local/directadmin/plugins/ssh_key_management/php/php.ini
+
+<?php
+require_once dirname(__DIR__) . '/php/bootstrap.php';
+
+$sshKeyController = new \DirectAdmin\SshKeyManagement\Controllers\SshKeyController;
+$firewallController = new \DirectAdmin\SshKeyManagement\Controllers\FirewallController;
+
+if($sshKeyController->hasUserSshAccess())
+{
+    if(isset($_GET['KEY']) && $_GET['KEY'] && ctype_digit($_GET['KEY']))
+    {
+        $key = $_GET['KEY'];
+
+        if($firewallController->deleteHost($key))
+        {
+            echo '<p>SSH access host is succesfully deleted. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        }
+        else
+        {
+            echo '<p>SSH access host is not deleted, due to an unknown error. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+        }
+    }
+    else
+    {
+        echo '<p>Invalid request. <a href="/CMD_PLUGINS/ssh_key_management">Back to list</a>.</p>';
+    }
+}
+else
+{
+echo '<p>Your account has no access to SSH.</p>';
+}
+?>
