@@ -6,7 +6,7 @@
  * Time: 22:04
  */
 
-require_once dirname(__DIR__) . '/php/bootstrap.php';
+require_once dirname(__DIR__) . '/bootstrap.php';
 
 $firewallController = new \DirectAdmin\SshKeyManagement\Controllers\FirewallController();
 

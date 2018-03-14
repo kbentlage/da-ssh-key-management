@@ -130,7 +130,7 @@ class FirewallController
                         {
                             if(!$host['processed'])
                             {
-                                $allowRule = 'tcp|in|d=22|s='.$host['address'].' # da-ssh-management: '.$user.' @ '.date('d-m-Y H:i').PHP_EOL;
+                                $allowRule = 'tcp|in|d=22|s='.$host['address'].' # da-ssh-key-management - '.$user.' - '.$host['description'].' - '.date('d-m-Y H:i').PHP_EOL;
 
                                 if(file_put_contents('/etc/csf/csf.allow', $allowRule, FILE_APPEND))
                                 {
@@ -145,7 +145,7 @@ class FirewallController
 
                         if($updated)
                         {
-                            $hostsJson = json_decode($hosts);
+                            $hostsJson = json_encode($hosts);
 
                             file_put_contents('/home/'.$user.'/.ssh-hosts.json', $hostsJson);
                         }
