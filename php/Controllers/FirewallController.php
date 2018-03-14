@@ -55,8 +55,19 @@ class FirewallController
      */
     public function getHosts()
     {
-        if ($this->_hosts) {
-            return $this->_hosts;
+        if ($this->_hosts)
+        {
+            $hosts = array();
+
+            foreach($this->_hosts as $host)
+            {
+                if(!$host['deleted'])
+                {
+                    $hosts[] = $host;
+                }
+            }
+
+            return $hosts;
         }
 
         return NULL;
@@ -130,15 +141,31 @@ class FirewallController
                         {
                             if(!$host['processed'])
                             {
-                                $allowRule = 'tcp|in|d=22|s='.$host['address'].' # da-ssh-key-management - '.$user.' - '.$host['description'].' - '.date('d-m-Y H:i').PHP_EOL;
-
-                                if(file_put_contents('/etc/csf/csf.allow', $allowRule, FILE_APPEND))
+                                // delete IP
+                                if($host['deleted'])
                                 {
+                                    $deleteRule = 'tcp|in|d=22|s='.$host['address'].' # da-ssh-key-management - '.$user;
+
+                                    shell_exec('sed -i "/'.$deleteRule.'/d" /etc/csf/csf.allow');
                                     shell_exec('csf -r');
 
-                                    $hosts[$key]['processed'] = TRUE;
+                                    unse($hosts[$key]);
 
                                     $updated = TRUE;
+                                }
+                                // add IP
+                                else
+                                {
+                                    $allowRule = 'tcp|in|d=22|s='.$host['address'].' # da-ssh-key-management - '.$user.' - '.$host['description'].' - '.date('d-m-Y H:i').PHP_EOL;
+
+                                    if(file_put_contents('/etc/csf/csf.allow', $allowRule, FILE_APPEND))
+                                    {
+                                        shell_exec('csf -r');
+
+                                        $hosts[$key]['processed'] = TRUE;
+
+                                        $updated = TRUE;
+                                    }
                                 }
                             }
                         }
@@ -169,6 +196,7 @@ class FirewallController
             'address'     => $address,
             'description' => $description,
             'processed'   => FALSE,
+            'deleted'     => FALSE,
         );
 
         return TRUE;
@@ -185,7 +213,8 @@ class FirewallController
     {
         if (isset($this->_hosts[$key]))
         {
-            unset($this->_hosts[$key]);
+            $this->_hosts[$key]['deleted'] = TRUE;
+            $this->_hosts[$key]['processed'] = FALSE;
 
             return TRUE;
         }
