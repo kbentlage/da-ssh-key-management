@@ -20,6 +20,9 @@ cd /usr/local/directadmin/plugins/ssh_key_management
 git pull
 ```
 
+# CSF firewall integration (14-03-2018)
+By default we have blocked public SSH access and we're using CSF as default firewall. I've integrated CSF so that end-users now can "whitelist" their IP-adresses for SSH access.
+
 # Screenshots
 Add SSH key
 
