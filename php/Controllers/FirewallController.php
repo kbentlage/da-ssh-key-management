@@ -175,7 +175,7 @@ class FirewallController
                             if($hosts)
                             {
                                 $hostsJson = json_encode($hosts);
-                                
+
                                 file_put_contents('/home/'.$user.'/.ssh-hosts.json', $hostsJson);
                             }
                             else
