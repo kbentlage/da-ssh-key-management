@@ -59,11 +59,11 @@ class FirewallController
         {
             $hosts = array();
 
-            foreach($this->_hosts as $host)
+            foreach($this->_hosts as $key => $host)
             {
                 if(!$host['deleted'])
                 {
-                    $hosts[] = $host;
+                    $hosts[$key] = $host;
                 }
             }
 
@@ -149,7 +149,7 @@ class FirewallController
                                     shell_exec('sed -i "/'.$deleteRule.'/d" /etc/csf/csf.allow');
                                     shell_exec('csf -r');
 
-                                    unse($hosts[$key]);
+                                    unset($hosts[$key]);
 
                                     $updated = TRUE;
                                 }
