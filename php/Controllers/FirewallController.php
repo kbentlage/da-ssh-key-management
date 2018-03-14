@@ -41,7 +41,12 @@ class FirewallController
                 {
                     if ($hosts)
                     {
-                        $this->_hosts = $hosts;
+                        $i = 1;
+                        foreach($hosts as $host)
+                        {
+                            $this->_hosts[$i] = $host;
+                            $i++;
+                        }
                     }
                 }
             }
